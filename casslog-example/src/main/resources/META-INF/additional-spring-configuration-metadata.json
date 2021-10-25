@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "casslog.level",
+      "type": "java.lang.String",
+      "description": "Description for casslog.level."
+    },
+    {
+      "name": "casslog.file",
+      "type": "java.lang.String",
+      "description": "Description for casslog.file."
+    }
+  ]
+}

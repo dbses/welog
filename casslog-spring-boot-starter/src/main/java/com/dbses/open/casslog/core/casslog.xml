@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true">
+
+    <!--rolling-file-->
+    <springProperty scope="context" name="fileName" source="casslog.appender.rollingFile.fileName"/>
+    <springProperty scope="context" name="filePattern" source="casslog.appender.rollingFile.pattern"/>
+    <springProperty scope="context" name="fileMaxSize" source="casslog.appender.rollingFile.fileMaxSize"/>
+    <springProperty scope="context" name="fileNamePattern" source="casslog.appender.rollingFile.fileNamePattern"/>
+    <springProperty scope="context" name="maxHistory" source="casslog.appender.rollingFile.maxHistory"/>
+
+    <!--console-->
+    <!-- %d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t %traceId (%F:%L) - %m%n -->
+    <springProperty scope="context" name="consolePattern" source="casslog.appender.console.pattern"/>
+
+    <!--logger-->
+    <springProperty scope="context" name="rootLevel" source="casslog.loggers.root.level"/>
+    <springProperty scope="context" name="loggerName" source="casslog.loggers.logger.name"/>
+    <springProperty scope="context" name="loggerLevel" source="casslog.loggers.logger.level"/>
+
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--如果只是想要 Error 级别的日志，那么需要过滤一下，默认是 info 级别的，ThresholdFilter-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <File>${fileName}</File>
+        <!-- rollingPolicy:当发生滚动时，决定 RollingFileAppender 的行为，涉及文件移动和重命名。 -->
+        <!-- TimeBasedRollingPolicy： 最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责出发滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次 -->
+            <fileNamePattern>${fileNamePattern}</fileNamePattern>
+            <!-- 每产生一个日志文件，该日志文件的保存期限为${maxHistory}天 -->
+            <maxHistory>${maxHistory}</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
+                <maxFileSize>${fileMaxSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <pattern>${filePattern}</pattern>
+            </layout>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="ASYNCFILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE"/>
+        <includeCallerData>true</includeCallerData>
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1000</queueSize>
+    </appender>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+                <pattern>${consolePattern}</pattern>
+            </layout>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>performance</marker>
+            </evaluator>
+            <onMismatch>ACCEPT</onMismatch>
+            <onMatch>DENY</onMatch>
+        </filter>
+    </appender>
+
+    <logger name="${loggerName}" level="${loggerLevel}"/>
+
+    <root level="${rootLevel}">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNCFILE"/>
+        <!--        <appender-ref ref="FILE"/>-->
+    </root>
+</configuration>

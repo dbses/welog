@@ -1,0 +1,7 @@
+# Application Listeners
+org.springframework.context.ApplicationListener=\
+com.dbses.open.casslog.core.PrepareCassLoggingApplicationListener
+
+# AutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.dbses.open.casslog.autoconfigure.CassLogAutoConfiguration

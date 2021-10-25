@@ -1,0 +1,37 @@
+debug: false
+server:
+  port: 30001
+encrypt.failOnError: false
+spring:
+  application:
+    name: casslog-example
+  cloud:
+    config:
+      uri: http://config-center.alpha-intra.casstime.com/conf
+      label: alpha
+
+management:
+  port: 21117
+  contextPath: /hellgate
+  security.enabled: false
+
+#casslog:
+#  # logback-spring_.xml
+#  appender:
+#    console:
+#      pattern: "[%d{HH:mm:ss.SSS}] [%thread] [%-5level] [%logger{40}:%-4.4line] [%tid] - %.-500msg%n"
+#    rolling-file:
+#      file-name: logs/${spring.application.name}.log
+#      pattern: "[%d{HH:mm:ss.SSS}] [%thread] [%-5level] [%logger{40}:%-4.4line] [%tid] - %.-500msg%n"
+#      file-name-pattern: logs/%d/${spring.application.name}.%i.log.zip
+#      file-max-size: "128MB"
+#      max-history: 30
+#  loggers:
+#    root:
+#      level: INFO
+#    logger:
+#      name: com.dbses.open.casslog
+#      level: DEBUG
+#  # java
+#  content:
+#    max-length: 500
