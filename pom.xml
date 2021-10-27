@@ -44,12 +44,12 @@
         <snapshotRepository>
             <id>snapshots</id>
             <name>snapshots</name>
-            <url>http://dev.casstime.com/nexus/repository/snapshots/</url>
+            <url>http://xx/nexus/repository/snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>releases</id>
             <name>releases</name>
-            <url>http://dev.casstime.com/nexus/repository/releases/</url>
+            <url>http://xx/nexus/repository/releases/</url>
         </repository>
     </distributionManagement>
 
@@ -59,14 +59,14 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>**/*.factories</include>
+                    <include>**</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
-                    <include>**/*.xml</include>
+                    <include>**</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>

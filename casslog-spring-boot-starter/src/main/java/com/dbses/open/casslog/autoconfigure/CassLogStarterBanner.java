@@ -2,6 +2,7 @@ package com.dbses.open.casslog.autoconfigure;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
+import com.dbses.open.casslog.core.CassLogInitializeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -16,27 +17,22 @@ import java.util.Optional;
  * @author yanglulu
  * @date 2021/10/15
  */
-public class CassLogStarterBanner implements Banner, ApplicationRunner {
+public class CassLogStarterBanner implements Banner {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CassLogStarterBanner.class);
+    public static void print() {
+        Logger logger = LoggerFactory.getLogger(CassLogStarterBanner.class);
 
-    @Override
-    public void run(ApplicationArguments args) {
-        printBanner(null, null, System.out);
+        new CassLogStarterBanner().printBanner(null, null, System.out);
 
-        // 打印内部的状态
+        // 打印初始化过程
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         StatusPrinter.print(lc);
 
-        if (LOGGER instanceof ch.qos.logback.classic.Logger) {
-            LOGGER.info("CassLog initialize Success.");
+        if (logger instanceof ch.qos.logback.classic.Logger) {
+            logger.info("CassLog initialize Success.");
         } else {
-            fail();
+            throw new CassLogInitializeException("CassLog initialize Fail: not instance of ch.qos.logback.classic.Logger");
         }
-    }
-
-    private void fail() {
-        LOGGER.info("CassLog initialize Fail.");
     }
 
     @Override
@@ -52,6 +48,7 @@ public class CassLogStarterBanner implements Banner, ApplicationRunner {
                 "                               |___/  \t" + version + "\n";
 
         out.println(banner);
+
     }
 
 }
